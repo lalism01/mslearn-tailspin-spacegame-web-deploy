@@ -7,11 +7,11 @@ variables:
 
 schedules:
 - cron: '0 3 * * *'
-  displayName: 'Deploy everyday at 3 A.M.'
+  displayName: 'Deploy every day at 3 A.M.'
   branches:
-    include: 
+    include:
     - release
-    always: false
+  always: false 
 
 stages:
 - stage: 'Build'
@@ -75,7 +75,7 @@ stages:
       artifact: drop
 
 - stage: 'Dev'
-  displayName: 'Deploy the web application'
+  displayName: 'Deploy to the dev environment'
   dependsOn: Build
   condition: |
     and
@@ -106,15 +106,15 @@ stages:
 - stage: 'Test'
   displayName: 'Deploy to the test environment'
   dependsOn: Dev
-  #condition eq(variables['Build.Reason'], 'Schedule')
+  #condition: eq(variables['Build.Reason'], 'Schedule')
   jobs:
   - deployment: Deploy
-    pool: 
+    pool:
       vmImage: 'ubuntu-20.04'
     environment: test
     variables:
     - group: 'Release'
-    strategy: 
+    strategy:
       runOnce:
         deploy:
           steps:
@@ -125,4 +125,4 @@ stages:
             inputs:
               azureSubscription: 'Resource Manager - Tailspin - Space Game'
               appName: '$(WebAppNameTest)'
-              package: '$(Pipeline.Workspace)/drop/$(buildconfiguration)/*.zip'
+              package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
