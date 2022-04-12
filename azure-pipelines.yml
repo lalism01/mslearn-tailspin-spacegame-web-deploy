@@ -6,7 +6,7 @@ variables:
   releaseBranchName: 'release'
 
 schedules:
-- cron: '31 15 * * *'
+- cron: '0 3 * * *'
   displayName: 'Deploy every day at 3 A.M.'
   branches:
     include:
@@ -138,14 +138,14 @@ stages:
     variables:
     - group: 'Release'
     strategy:
-      runOnce: 
-        deploy: 
-          steps: 
+      runOnce:
+        deploy:
+          steps:
           - download: current
             artifact: drop
           - task: AzureWebApp@1
             displayName: 'Azure App Service Deploy: website'
-            inputs: 
+            inputs:
               azureSubscription: 'Resource Manager - Tailspin - Space Game'
               appName: '$(WebAppNameStaging)'
-              packege: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip' 
+              package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
